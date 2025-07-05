@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: movie-web-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: movie-web-app
+  template:
+    metadata:
+      labels:
+        app: movie-web-app
+    spec:
+      containers:
+      - name: movie-web-container
+        image: 913524937689.dkr.ecr.ap-south-1.amazonaws.com/website:latest
+        ports:
+        - containerPort: 80
