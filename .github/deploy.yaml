@@ -7,8 +7,8 @@ on:
 
 env:
   AWS_REGION: ap-south-1
-  ECR_REPOSITORY: moviezone-app
-  CLUSTER_NAME: moviezone-cluster
+  ECR_REPOSITORY: website
+  CLUSTER_NAME: EKS-CLOUD
   IMAGE_TAG: latest
 
 jobs:
@@ -42,8 +42,8 @@ jobs:
     - name: Build and push Docker image to ECR
       run: |
         docker build -t $ECR_REPOSITORY:$IMAGE_TAG .
-        docker tag $ECR_REPOSITORY:$IMAGE_TAG ${{ secrets.ECR_URI }}:$IMAGE_TAG
-        docker push ${{ secrets.ECR_URI }}:$IMAGE_TAG
+        docker tag $ECR_REPOSITORY:$IMAGE_TAG 913524937689.dkr.ecr.ap-south-1.amazonaws.com/$ECR_REPOSITORY:$IMAGE_TAG
+        docker push 913524937689.dkr.ecr.ap-south-1.amazonaws.com/$ECR_REPOSITORY:$IMAGE_TAG
 
     - name: Update kubeconfig for EKS
       run: |
