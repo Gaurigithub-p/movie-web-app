@@ -49,6 +49,7 @@ jobs:
       run: |
         aws eks update-kubeconfig --name $CLUSTER_NAME --region $AWS_REGION
 
-    - name: Apply Kubernetes deployment (auto)
+    - name: Apply Kubernetes deployment and service
       run: |
         kubectl apply -f k8/deployment.yaml
+        kubectl apply -f k8/service.yaml
