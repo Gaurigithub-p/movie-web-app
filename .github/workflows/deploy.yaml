@@ -8,7 +8,7 @@ on:
 env:
   AWS_REGION: ap-south-1
   ECR_REPOSITORY: website
-  CLUSTER_NAME: EKS-CLOUD
+  CLUSTER_NAME: EKS_CLOUD
   IMAGE_TAG: latest
 
 jobs:
