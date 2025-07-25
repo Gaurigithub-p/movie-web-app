@@ -7,8 +7,8 @@ on:
 
 env:
   AWS_REGION: ap-south-1
-  ECR_REPOSITORY: moviezone-app
-  CLUSTER_NAME: moviezone-cluster
+  ECR_REPOSITORY: website
+  CLUSTER_NAME: EKS-CLOUD
   IMAGE_TAG: v1
 
 jobs:
