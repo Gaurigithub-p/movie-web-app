@@ -1,9 +1,10 @@
 name: Deploy React App to EKS (Full Auto)
 
 on:
-  push:
-    branches:
-      - main
+  workflow_run:
+    workflows: ["Provision EKS Cluster with Terraform"]
+    types:
+      - completed
 
 env:
   AWS_REGION: ap-south-1
@@ -13,6 +14,7 @@ env:
 
 jobs:
   build-and-deploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
 
     steps:
