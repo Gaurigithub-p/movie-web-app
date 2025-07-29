@@ -248,16 +248,6 @@ For specific version:
 ```bash
 DESIRED_VERSION=v3.8.2 bash get_helm.sh
 ```
-
-### After Creating EKS Cluster:
-
-```bash
-eksctl get cluster --name EKS_CLOUD --region ap-south-1
-aws eks update-kubeconfig --name EKS_CLOUD --region ap-south-1
-kubectl get nodes
-kubectl get ns
-```
-
 ### Add Helm Repos and Install Prometheus Stack:
 
 ```bash
