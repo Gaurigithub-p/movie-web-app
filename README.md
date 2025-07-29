@@ -55,11 +55,6 @@ The app will open at `http://localhost:3000`.
 
 ---
 
-# 🎬 MovieZone – DevOps-Based Movie Web App Deployment (Up to AWS EKS)
-
-MovieZone is a responsive movie browsing web application built using React. This guide walks through deploying the app to AWS using Docker, Terraform, and Kubernetes (EKS) with a step-by-step DevOps workflow.
-
----
 
 ## 📚 Table of Contents
 
