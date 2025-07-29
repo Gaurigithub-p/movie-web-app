@@ -27,6 +27,7 @@ MovieZone\
 │   ├── App.js
 │   └── index.js
 ```
+
 ---
 
 ### 🔧 Installation & Setup
@@ -52,27 +53,29 @@ npm start
 
 The app will open at `http://localhost:3000`.
 
-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+---
 
- MovieZone – DevOps-Based Movie Web App Deployment (Up to AWS EKS)
+# 🎬 MovieZone – DevOps-Based Movie Web App Deployment (Up to AWS EKS)
 
 MovieZone is a responsive movie browsing web application built using React. This guide walks through deploying the app to AWS using Docker, Terraform, and Kubernetes (EKS) with a step-by-step DevOps workflow.
 
 ---
 
-## Table of Contents
+## 📚 Table of Contents
 
-1. Project Overview  
-2. Technologies Used  
-3. Prerequisites  
-4. Clone the Repository  
-5. Build React App  
-6. Dockerize the App  
-7. Push Docker Image to AWS ECR  
-8. Setup Infrastructure using Terraform  
-9. Create EKS Cluster and Connect  
-10. Deploy App to EKS  
+1. Project Overview
+2. Technologies Used
+3. Prerequisites
+4. Clone the Repository
+5. Build React App
+6. Dockerize the App
+7. Push Docker Image to AWS ECR
+8. Setup Infrastructure using Terraform
+9. Create EKS Cluster and Connect
+10. Deploy App to EKS
 11. Verify Deployment
+12. CI/CD with GitHub Actions
+13. Monitoring with Prometheus & Grafana
 
 ---
 
@@ -84,11 +87,11 @@ The goal of this project is to containerize and deploy a React-based movie web a
 
 ## 2. Technologies Used
 
-- Frontend: React, HTML, CSS  
-- Backend: Node.js with Express (optional static server)  
-- DevOps Tools: Docker, Terraform, GitHub Actions  
-- Cloud: AWS (ECR, EKS, IAM, VPC)  
-- Orchestration: Kubernetes (EKS)
+* Frontend: React, HTML, CSS
+* Backend: Node.js with Express (optional static server)
+* DevOps Tools: Docker, Terraform, GitHub Actions
+* Cloud: AWS (ECR, EKS, IAM, VPC)
+* Orchestration: Kubernetes (EKS)
 
 ---
 
@@ -96,18 +99,18 @@ The goal of this project is to containerize and deploy a React-based movie web a
 
 Ensure the following tools are installed:
 
-- [Docker](https://www.docker.com/)
-- [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html)
-- [Terraform](https://developer.hashicorp.com/terraform/install)
-- [kubectl](https://kubernetes.io/docs/tasks/tools/)
-- [Node.js](https://nodejs.org/) (v18+)
-- IAM user with access to EKS, EC2, IAM, VPC, and ECR
+* [Docker](https://www.docker.com/)
+* [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html)
+* [Terraform](https://developer.hashicorp.com/terraform/install)
+* [kubectl](https://kubernetes.io/docs/tasks/tools/)
+* [Node.js](https://nodejs.org/) (v18+)
+* IAM user with access to EKS, EC2, IAM, VPC, and ECR
 
 Configure AWS credentials:
 
 ```bash
 aws configure
-````
+```
 
 ---
 
@@ -197,23 +200,7 @@ This will create:
 
 ---
 
-## 9. Create EKS Cluster and Connect
-
-Update your kubeconfig:
-
-```bash
-aws eks update-kubeconfig --region ap-south-1 --name moviezone-eks
-```
-
-Verify connection:
-
-```bash
-kubectl get nodes
-```
-
----
-
-## 10. Deploy App to EKS
+## 9. Deploy App to EKS
 
 Apply your Kubernetes manifests:
 
@@ -231,7 +218,7 @@ kubectl apply -f k8s/secret.yaml
 
 ---
 
-## 11. Verify Deployment
+## 10. Verify Deployment
 
 Check if pods and services are running:
 
@@ -241,3 +228,87 @@ kubectl get svc
 ```
 
 Once the service is exposed, access the app using the external LoadBalancer URL.
+
+---
+
+## 11. CI/CD Pipeline Integration with GitHub
+
+* **Workflow 1**: Provisions infrastructure using Terraform (`terraform-eks.yml`)
+* **Workflow 2**: Deploys the React app to the cluster once ready (`deploy.yaml`)
+
+---
+
+## 12. Monitoring with Prometheus & Grafana
+
+### Install Helm on EC2 or Ubuntu machine:
+
+```bash
+curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+chmod 700 get_helm.sh
+./get_helm.sh
+```
+
+For specific version:
+
+```bash
+DESIRED_VERSION=v3.8.2 bash get_helm.sh
+```
+
+### After Creating EKS Cluster:
+
+```bash
+eksctl get cluster --name EKS_CLOUD --region ap-south-1
+aws eks update-kubeconfig --name EKS_CLOUD --region ap-south-1
+kubectl get nodes
+kubectl get ns
+```
+
+### Add Helm Repos and Install Prometheus Stack:
+
+```bash
+helm repo add stable https://charts.helm.sh/stable
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+kubectl create namespace prometheus
+helm install stable prometheus-community/kube-prometheus-stack -n prometheus
+```
+
+### Check pods and services:
+
+```bash
+kubectl get pods -n prometheus
+kubectl get svc -n prometheus
+```
+
+### Expose Prometheus and Grafana to External Browser
+
+Edit Prometheus service:
+
+```bash
+kubectl edit svc stable-kube-prometheus-sta-prometheus -n prometheus
+```
+
+Change type: `ClusterIP` ➝ `LoadBalancer`
+
+Edit Grafana service:
+
+```bash
+kubectl edit svc stable-grafana -n prometheus
+```
+
+Change type: `ClusterIP` ➝ `LoadBalancer`
+
+Get LoadBalancer URL and access:
+
+```bash
+kubectl get svc -n prometheus
+```
+
+Access Prometheus at: `http://<prometheus-lb>:9090`
+
+Access Grafana at: `http://<grafana-lb>`
+
+### Get Grafana Admin Password:
+
+```bash
+kubectl get secret --namespace prometheus stable-grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
+```
